@@ -75,7 +75,7 @@ public final class EventListener implements Listener {
             BarCrawlPlugin.plugin().getLogger().info(player.getName() + " rolled");
         }
         final int index = session.getTag().getNpcs().indexOf(id);
-        if (index < 0) {
+        if (index < 0 || !session.getTag().isStarted()) {
             final ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
             book.editMeta(BookMeta.class, meta -> {
                     meta.author(text("Cavetale"));
