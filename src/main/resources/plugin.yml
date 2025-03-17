@@ -1,0 +1,27 @@
+main: com.cavetale.barcrawl.BarCrawlPlugin
+name: BarCrawl
+
+version: ${version}
+api-version: '1.21'
+
+author: StarTux
+website: https://github.com/StarTux/BarCrawl
+description: BarCrawl Plugin
+
+depend: [Core]
+softdepend: []
+
+commands:
+
+  barcrawl:
+    aliases: []
+    description: BarCrawl Command
+    permission: barcrawl.admin
+    usage: |-
+      /barcrawl
+
+permissions:
+
+  barcrawl.admin:
+    description: Use /barcrawl
+    default: op
