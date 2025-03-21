@@ -16,7 +16,7 @@ public enum Need {
     PAWN("Pawn", Mytems.WHITE_PAWN, "One of my chess pieces went missing."),
     DICE("Dice", Mytems.DICE, "Time to play Yahtzee! But my other dice went missing."),
     KEY("Key", Mytems.SILVER_KEY, "Bummer, I locked my safe and lost the key."),
-    PIRATE_FLAG("Pirate Flag", Mytems.PIRATE_FLAG, "By pirate ship is missing a flag before I can set sail."),
+    PIRATE_FLAG("Pirate Flag", Mytems.PIRATE_FLAG, "My pirate ship is missing a flag before I can set sail."),
     RUSTY_BUCKET("Rusty Bucket", Mytems.RUSTY_BUCKET, "I'm in need of something covered with rust. Don't ask why."),
     RING("Ring", Mytems.SILVER_RUBY_RING, "I lost my ring with the green gem somewhere."),
     TROPHY("Trophy", Mytems.GOLDEN_SPLEEF_TROPHY, "I forgot where I put my golden trophy."),
