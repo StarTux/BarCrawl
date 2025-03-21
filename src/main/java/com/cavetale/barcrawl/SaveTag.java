@@ -33,4 +33,12 @@ public final class SaveTag implements Serializable {
     public int getScore(UUID uuid) {
         return scores.getOrDefault(uuid, 0);
     }
+
+    public int getTotalScore() {
+        int result = 0;
+        for (Integer value : scores.values()) {
+            result += value;
+        }
+        return result;
+    }
 }

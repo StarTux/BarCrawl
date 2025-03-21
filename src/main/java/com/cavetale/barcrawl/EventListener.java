@@ -4,8 +4,10 @@ import com.cavetale.core.event.hud.PlayerHudEvent;
 import com.cavetale.core.event.hud.PlayerHudPriority;
 import com.cavetale.mytems.Mytems;
 import com.cavetale.worldmarker.entity.EntityMarker;
+import java.util.ArrayList;
 import java.util.List;
 import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -49,14 +51,19 @@ public final class EventListener implements Listener {
         final Session session = Session.get(player.getUniqueId());
         if (session.getTag().isStarted()) {
             final Need nextNeed = session.getTag().getNeeds().get(session.getTag().getNeedIndex());
-            event.bossbar(PlayerHudPriority.DEFAULT,
+            event.bossbar(PlayerHudPriority.HIGH,
                           textOfChildren(text(tiny("your item "), GRAY), nextNeed.getMytems(), text(nextNeed.getDisplayName(), GREEN)),
                           BossBar.Color.GREEN,
                           BossBar.Overlay.PROGRESS,
                           1f);
         }
-        if (BarCrawlPlugin.plugin().getSaveTag().getScore(player.getUniqueId()) > 0) {
-            event.sidebar(PlayerHudPriority.DEFAULT, BarCrawlPlugin.plugin().getHighscore());
+        final int score = BarCrawlPlugin.plugin().getSaveTag().getScore(player.getUniqueId());
+        if (score > 0) {
+            final List<Component> sidebar = new ArrayList<>();
+            sidebar.add(BarCrawlPlugin.TITLE);
+            sidebar.add(textOfChildren(text(tiny("completions "), GRAY), text(score, WHITE)));
+            sidebar.addAll(BarCrawlPlugin.plugin().getHighscore());
+            event.sidebar(PlayerHudPriority.HIGH, sidebar);
         }
     }
 

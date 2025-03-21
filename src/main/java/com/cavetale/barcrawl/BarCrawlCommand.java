@@ -9,6 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.Component.textOfChildren;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
 
 public final class BarCrawlCommand extends AbstractCommand<BarCrawlPlugin> {
@@ -18,6 +19,9 @@ public final class BarCrawlCommand extends AbstractCommand<BarCrawlPlugin> {
 
     @Override
     protected void onEnable() {
+        rootNode.addChild("info").denyTabCompletion()
+            .description("Print info")
+            .senderCaller(this::info);
         rootNode.addChild("enable").denyTabCompletion()
             .description("Enable plugin")
             .senderCaller(this::enable);
@@ -33,6 +37,13 @@ public final class BarCrawlCommand extends AbstractCommand<BarCrawlPlugin> {
         rootNode.addChild("progress").denyTabCompletion()
             .description("Make progress")
             .playerCaller(this::progress);
+    }
+
+    private void info(CommandSender sender) {
+        sender.sendMessage(textOfChildren(text("Enabled ", GRAY), (plugin.getSaveTag().isEnabled()
+                                                                   ? text("True", GREEN)
+                                                                   : text("False", RED))));
+        sender.sendMessage(textOfChildren(text("Completions ", GRAY), text(plugin.getSaveTag().getTotalScore(), WHITE)));
     }
 
     private void enable(CommandSender sender) {
