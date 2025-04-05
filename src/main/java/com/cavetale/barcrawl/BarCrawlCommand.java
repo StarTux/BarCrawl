@@ -2,9 +2,19 @@ package com.cavetale.barcrawl;
 
 import com.cavetale.core.command.AbstractCommand;
 import com.cavetale.core.command.CommandWarn;
+import com.cavetale.fam.trophy.Highscore;
+import com.cavetale.mytems.item.trophy.TrophyCategory;
 import com.cavetale.worldmarker.entity.EntityMarker;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
@@ -37,6 +47,12 @@ public final class BarCrawlCommand extends AbstractCommand<BarCrawlPlugin> {
         rootNode.addChild("progress").denyTabCompletion()
             .description("Make progress")
             .playerCaller(this::progress);
+        rootNode.addChild("export").denyTabCompletion()
+            .description("Export highscore")
+            .senderCaller(this::export);
+        rootNode.addChild("reward").denyTabCompletion()
+            .description("Make rewards")
+            .senderCaller(this::reward);
     }
 
     private void info(CommandSender sender) {
@@ -98,5 +114,36 @@ public final class BarCrawlCommand extends AbstractCommand<BarCrawlPlugin> {
         BarCrawlPlugin.plugin().reload();
         Session.reload();
         sender.sendMessage(text("Reloaded", YELLOW));
+    }
+
+    private void export(CommandSender sender) {
+        // Write file
+        final Set<UUID> uuids = new HashSet<>();
+        for (Map.Entry<UUID, Integer> entry : plugin.getSaveTag().getScores().entrySet()) {
+            final UUID uuid = entry.getKey();
+            final int score = entry.getValue();
+            if (score >= 1) uuids.add(uuid);
+        }
+        final File file = new File(plugin.getDataFolder(), "uuids.txt");
+        try (PrintWriter writer = new PrintWriter(file)) {
+            for (UUID uuid : uuids) {
+                writer.println(uuid.toString());
+            }
+        } catch (IOException ioe) {
+            throw new UncheckedIOException("Writing to " + file, ioe);
+        }
+        sender.sendMessage(text(uuids.size() + " written to " + file, YELLOW));
+    }
+
+    private void reward(CommandSender sender) {
+        // Give trophies
+        final int trophies = Highscore.reward(plugin.getSaveTag().getScores(),
+                                              "barcrawl",
+                                              TrophyCategory.MEDAL,
+                                              BarCrawlPlugin.TITLE,
+                                              hi -> (hi.score == 1
+                                                     ? "You finished one Bar Crawl!"
+                                                     : "You finished " + hi.score + " Bar Crawls!"));
+        sender.sendMessage(text(trophies + " Trophies delivered", YELLOW));
     }
 }
