@@ -24,7 +24,7 @@ public enum Need {
     CANDY("Candy", Mytems.VOTE_CANDY, "I crave for something pink and sweet."),
     CLOAK("Cloak", Mytems.BLUE_CLOAK, "I forgot where I hung my cloak."),
     PIANO("Piano", Mytems.ELECTRIC_PIANO, "Let's make some music. Too bad I left my instrument at home."),
-    FLAG("Flag", Mytems.IRELAND, "Let's raise the Irish flag today!"),
+    FLAG("Flag", Mytems.GERMANY, "Let's raise the German flag today!"),
     WATERING_CAN("Watering Can", Mytems.WATERING_CAN, "I need to water my flowers real quick."),
     BUTTERFLY("Butterfly", Mytems.GREEN_BUTTERFLY, "I saw an awesome butterfly earlier. I wish I had caught it!"),
     TRAFFIC_LIGHT("Traffic Light", Mytems.TRAFFIC_LIGHT, "I want to play Red Light Green Light."),
