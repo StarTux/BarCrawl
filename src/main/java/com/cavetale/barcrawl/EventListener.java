@@ -80,10 +80,10 @@ public final class EventListener implements Listener {
         final int index = session.getTag().getNpcs().indexOf(id);
         if (index < 0 || !session.getTag().isStarted()) {
             if (!session.getTag().isStarted()) {
-                session.getTag().roll();
+                session.getTag().roll(player.getUniqueId());
                 session.getTag().setStarted(true);
                 session.save();
-                BarCrawlPlugin.plugin().getLogger().info(player.getName() + " rolled");
+                BarCrawlPlugin.plugin().getLogger().info(player.getName() + " rolled (" + session.getTag().getNeeds().size());
             }
             final ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
             book.editMeta(BookMeta.class, meta -> {
