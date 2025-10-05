@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 public enum Need {
     PAINTBRUSH("Paintbrush", Mytems.GREEN_PAINTBRUSH, "This room needs a fresh coat of paint."),
     JADE("Jade", Mytems.HEART_SHAPED_JADE, "I need a nice round gem with the right color."),
-    WHIP("Whip", Mytems.LEATHER_WHIP, "I want to cosplay as a archaeologist, but something is missing."),
+    WHIP("Whip", Mytems.LEATHER_WHIP, "I want to cosplay as an archaeologist, but something is missing."),
     FLOPPY_DISK("Floppy Disk", Mytems.FLOPPY_DISK, "I need to backup all my data but don't have a storage device."),
     AXE("Axe", Mytems.TREE_CHOPPER, "Time to cut down some trees. Where did I put my trusty axe?"),
     SHIELD("Shield", Mytems.CLOVER_ROUND_SHIELD, "I need a nice decorative shield."),
