@@ -114,6 +114,7 @@ public final class EventListener implements Listener {
         final Need thisNeed = session.getTag().getNeeds().get(index);
         final Need currentNeed = session.getTag().getNeeds().get(session.getTag().getNeedIndex());
         if (thisNeed == currentNeed) {
+            session.getTag().setNeedIndex(session.getTag().getNeedIndex() + 1);
             if (session.getTag().getNeedIndex() >= session.getTag().getNeeds().size()) {
                 // complete
                 session.getTag().setStarted(false);
