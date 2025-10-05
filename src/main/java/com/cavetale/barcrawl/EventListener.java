@@ -83,7 +83,7 @@ public final class EventListener implements Listener {
                 session.getTag().roll(player.getUniqueId());
                 session.getTag().setStarted(true);
                 session.save();
-                BarCrawlPlugin.plugin().getLogger().info(player.getName() + " rolled (" + session.getTag().getNeeds().size());
+                BarCrawlPlugin.plugin().getLogger().info(player.getName() + " rolled (" + session.getTag().getNeeds().size() + ")");
             }
             final ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
             book.editMeta(BookMeta.class, meta -> {
