@@ -10,16 +10,24 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UncheckedIOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import static net.kyori.adventure.text.Component.join;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.textOfChildren;
+import static net.kyori.adventure.text.JoinConfiguration.separator;
+import static net.kyori.adventure.text.event.ClickEvent.runCommand;
+import static net.kyori.adventure.text.event.HoverEvent.showText;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
 
 public final class BarCrawlCommand extends AbstractCommand<BarCrawlPlugin> {
@@ -41,6 +49,9 @@ public final class BarCrawlCommand extends AbstractCommand<BarCrawlPlugin> {
         rootNode.addChild("scan").denyTabCompletion()
             .description("Scan NPCs")
             .playerCaller(this::scan);
+        rootNode.addChild("find").denyTabCompletion()
+            .description("Find NPCs")
+            .playerCaller(this::find);
         rootNode.addChild("reload").denyTabCompletion()
             .description("Reload configs")
             .playerCaller(this::reload);
@@ -78,7 +89,7 @@ public final class BarCrawlCommand extends AbstractCommand<BarCrawlPlugin> {
         final List<String> list = new ArrayList<>();
         for (ArmorStand as : player.getWorld().getEntitiesByClass(ArmorStand.class)) {
             final String id = EntityMarker.getId(as);
-            if (id == null) continue;
+            if (id == null || id.equals("__unused")) continue;
             list.add(id);
         }
         final List<String> list2 = new ArrayList<>();
@@ -98,6 +109,57 @@ public final class BarCrawlCommand extends AbstractCommand<BarCrawlPlugin> {
         player.sendMessage(text(msg, YELLOW));
         BarCrawlPlugin.plugin().getLogger().info(msg);
         player.sendMessage(text("Total " + list.size() + " NPCs", YELLOW));
+    }
+
+    private void find(Player player) {
+        final List<String> list = new ArrayList<>();
+        final Map<String, String> xyzMap = new HashMap<>();
+        for (ArmorStand as : player.getWorld().getEntitiesByClass(ArmorStand.class)) {
+            if (as.isInvisible()) continue;
+            final String id = EntityMarker.getId(as);
+            final ItemStack head = as.getEquipment().getHelmet();
+            final String xyz = as.getLocation().getBlockX()
+                + " " + as.getLocation().getBlockY()
+                + " " + as.getLocation().getBlockZ();
+            if (head == null || head.isEmpty()) {
+                if (id != null) {
+                    player.sendMessage(text("Headless Armor Stand with ID at " + xyz + ": " + id, GRAY)
+                                       .hoverEvent(showText(text(xyz, GRAY)))
+                                       .insertion(xyz)
+                                       .clickEvent(runCommand("/tp " + xyz)));
+                }
+                continue;
+            } else if (id == null) {
+                player.sendMessage(text("Armor Stand without ID at " + xyz, GRAY)
+                                   .hoverEvent(showText(text(xyz, GRAY)))
+                                   .insertion(xyz)
+                                   .clickEvent(runCommand("/tp " + xyz)));
+            } else if (id.equals("__unused")) {
+                continue;
+            } else if (list.contains(id)) {
+                player.sendMessage(text("Armor Stand with duplicate ID at " + xyz + ": " + id, RED)
+                                   .hoverEvent(showText(text(xyz, RED)))
+                                   .insertion(xyz)
+                                   .clickEvent(runCommand("/tp " + xyz)));
+            } else {
+                list.add(id);
+                xyzMap.put(id, xyz);
+            }
+        }
+        if (list.isEmpty()) throw new CommandWarn("No NPCs found");
+        list.sort(String.CASE_INSENSITIVE_ORDER);
+        final List<Component> components = new ArrayList<>(list.size());
+        for (String it : list) {
+            final String xyz = xyzMap.get(it);
+            components.add(text("\"" + it + "\"", YELLOW)
+                           .hoverEvent(showText(text(xyz, GRAY)))
+                           .clickEvent(runCommand("/tp " + xyz))
+                           .insertion(xyz));
+        }
+        final Component msg = join(separator(text(", ", GRAY)), components);
+        player.sendMessage(textOfChildren(text("Total " + list.size() + ": "), msg));
+        Bukkit.getConsoleSender().sendMessage(text("Total " + list.size() + " NPCs", YELLOW));
+        Bukkit.getConsoleSender().sendMessage(msg);
     }
 
     private void progress(Player player) {

@@ -21,13 +21,19 @@ public enum Need {
     RING("Ring", Mytems.SILVER_RUBY_RING, "I lost my ring with the green gem somewhere."),
     TROPHY("Trophy", Mytems.GOLDEN_SPLEEF_TROPHY, "I forgot where I put my golden trophy."),
     HANDHELD("Handheld", Mytems.BIT_BOY, "Have you seen my portable gaming console?"),
-    CANDY("Candy", Mytems.VOTE_CANDY, "I crave for something sweet."),
+    CANDY("Candy", Mytems.VOTE_CANDY, "I crave for something pink and sweet."),
     CLOAK("Cloak", Mytems.BLUE_CLOAK, "I forgot where I hung my cloak."),
     PIANO("Piano", Mytems.ELECTRIC_PIANO, "Let's make some music. Too bad I left my instrument at home."),
     FLAG("Flag", Mytems.IRELAND, "Let's raise the Irish flag today!"),
     WATERING_CAN("Watering Can", Mytems.WATERING_CAN, "I need to water my flowers real quick."),
     BUTTERFLY("Butterfly", Mytems.GREEN_BUTTERFLY, "I saw an awesome butterfly earlier. I wish I had caught it!"),
     TRAFFIC_LIGHT("Traffic Light", Mytems.TRAFFIC_LIGHT, "I want to play Red Light Green Light."),
+
+    CANDY_CORN("Candy Corn", Mytems.CANDY_CORN, "I need something sweet that's yellow, orange, and white, for trick or treaters."),
+    CHOCOLATE("Chocolate", Mytems.CHOCOLATE_BAR, "Trick or treaters are on their way and I have no chocolate to give them."),
+    LOLLIPOP("Lollipop", Mytems.LOLLIPOP, "I need a lollipop for my niece for Halloween."),
+    KNIFE("Kitchen Knife", Mytems.KNIFE, "How am I supposed to slice these onions?"),
+    SCYTHE("Scythe", Mytems.CRESCENT_MOON, "I need something to mow my lawn with."),
     ;
 
     private final String displayName;
