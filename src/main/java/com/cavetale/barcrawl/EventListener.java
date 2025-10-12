@@ -73,7 +73,7 @@ public final class EventListener implements Listener {
     private void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
         if (!BarCrawlPlugin.plugin().getSaveTag().isEnabled()) return;
         final String id = EntityMarker.getId(event.getRightClicked());
-        if (id == null) return;
+        if (id == null || id.equals("__unused")) return;
         final Player player = event.getPlayer();
         final Session session = Session.get(player.getUniqueId());
         event.setCancelled(true);
