@@ -13,6 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -46,10 +47,15 @@ public final class EventListener implements Listener {
         Session.unload(event.getPlayer().getUniqueId());
     }
 
+    public boolean isBarCrawlWorld(World world) {
+        return "daftpunkytrash-007".equals(world.getName());
+    }
+
     @EventHandler
     private void onPlayerHud(PlayerHudEvent event) {
         if (!BarCrawlPlugin.plugin().getSaveTag().isEnabled()) return;
         final Player player = event.getPlayer();
+        if (!isBarCrawlWorld(player.getWorld())) return;
         final Session session = Session.get(player.getUniqueId());
         if (session.getTag().isStarted()) {
             final Need nextNeed = session.getTag().getNeeds().get(session.getTag().getNeedIndex());
@@ -72,9 +78,10 @@ public final class EventListener implements Listener {
     @EventHandler
     private void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
         if (!BarCrawlPlugin.plugin().getSaveTag().isEnabled()) return;
+        final Player player = event.getPlayer();
+        if (!isBarCrawlWorld(player.getWorld())) return;
         final String id = EntityMarker.getId(event.getRightClicked());
         if (id == null || id.equals("__unused")) return;
-        final Player player = event.getPlayer();
         final Session session = Session.get(player.getUniqueId());
         event.setCancelled(true);
         final int index = session.getTag().getNpcs().indexOf(id);
