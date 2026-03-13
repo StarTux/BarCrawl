@@ -14,11 +14,12 @@ import static net.kyori.adventure.text.format.TextDecoration.*;
 @Getter
 public final class BarCrawlPlugin extends JavaPlugin {
     public static final Component TITLE = textOfChildren(Mytems.FIZZY_BREW, text("Bar Crawl", color(0x00ff00), BOLD));
-    protected static BarCrawlPlugin instance;
-    protected final BarCrawlCommand barcrawlCommand = new BarCrawlCommand(this);
-    protected final EventListener eventListener = new EventListener();
+    @Getter private static BarCrawlPlugin instance;
+    private final BarCrawlCommand barcrawlCommand = new BarCrawlCommand(this);
+    private final EventListener eventListener = new EventListener(this);
     private SaveTag saveTag;
     private List<Component> highscore;
+    private BarCrawlEdition edition = BarCrawlEdition.ST_PATRICKS;
 
     public BarCrawlPlugin() {
         instance = this;

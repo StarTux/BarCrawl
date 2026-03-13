@@ -9,7 +9,7 @@ import lombok.Data;
 
 @Data
 public final class SessionTag implements Serializable {
-    private List<Need> needs = new ArrayList<>();
+    private List<String> needs = new ArrayList<>();
     private List<String> npcs = new ArrayList<>();
     private int needIndex;
     private boolean started;
@@ -18,7 +18,7 @@ public final class SessionTag implements Serializable {
         needs.clear();
         npcs.clear();
         needIndex = 0;
-        final List<Need> allNeeds = new ArrayList<>(List.of(Need.values()));
+        final List<String> allNeeds = new ArrayList<>(BarCrawlPlugin.getInstance().getEdition().getNeeds().getAllKeys());
         final List<String> allNpcs = new ArrayList<>(NonPlayerCharacter.IDS);
         Collections.shuffle(allNeeds);
         Collections.shuffle(allNpcs);
@@ -28,5 +28,21 @@ public final class SessionTag implements Serializable {
             needs.add(allNeeds.get(i));
             npcs.add(allNpcs.get(i));
         }
+    }
+
+    public String getNeedKey(int index) {
+        return needs.get(index);
+    }
+
+    public String getCurrentNeedKey() {
+        return getNeedKey(needIndex);
+    }
+
+    public Need getNeed(int index) {
+        return BarCrawlPlugin.getInstance().getEdition().getNeeds().getNeed(getNeedKey(index));
+    }
+
+    public Need getCurrentNeed() {
+        return getNeed(needIndex);
     }
 }
