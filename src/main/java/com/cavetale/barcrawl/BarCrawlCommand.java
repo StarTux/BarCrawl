@@ -5,6 +5,8 @@ import com.cavetale.core.command.CommandWarn;
 import com.cavetale.fam.trophy.Highscore;
 import com.cavetale.mytems.item.trophy.TrophyCategory;
 import com.cavetale.worldmarker.entity.EntityMarker;
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.datacomponent.item.ResolvableProfile;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -18,6 +20,7 @@ import java.util.Set;
 import java.util.UUID;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
@@ -52,6 +55,9 @@ public final class BarCrawlCommand extends AbstractCommand<BarCrawlPlugin> {
         rootNode.addChild("find").denyTabCompletion()
             .description("Find NPCs")
             .playerCaller(this::find);
+        rootNode.addChild("auto").denyTabCompletion()
+            .description("Assign NPC Names")
+            .playerCaller(this::auto);
         rootNode.addChild("reload").denyTabCompletion()
             .description("Reload configs")
             .playerCaller(this::reload);
@@ -160,6 +166,37 @@ public final class BarCrawlCommand extends AbstractCommand<BarCrawlPlugin> {
         player.sendMessage(textOfChildren(text("Total " + list.size() + ": "), msg));
         Bukkit.getConsoleSender().sendMessage(text("Total " + list.size() + " NPCs", YELLOW));
         Bukkit.getConsoleSender().sendMessage(msg);
+    }
+
+    private void auto(Player player) {
+        int count = 0;
+        for (ArmorStand as : player.getWorld().getEntitiesByClass(ArmorStand.class)) {
+            if (as.isInvisible()) continue;
+            if (EntityMarker.getId(as) != null) continue;
+            final ItemStack skull = as.getEquipment().getHelmet();
+            if (skull == null || skull.getType() != Material.PLAYER_HEAD) continue;
+            if (!skull.hasData(DataComponentTypes.PROFILE)) continue;
+            final ResolvableProfile profile = skull.getData(DataComponentTypes.PROFILE);
+            final String name = profile.name();
+            if (name == null || name.isEmpty()) continue;
+            EntityMarker.setId(as, name);
+            count += 1;
+            final String xyz = as.getLocation().getBlockX()
+                + " " + as.getLocation().getBlockY()
+                + " " + as.getLocation().getBlockZ();
+            player.sendMessage(
+                textOfChildren(
+                    text("Assigned ", GRAY),
+                    text(name),
+                    text(" to Armor Stand at ", GRAY),
+                    text(xyz)
+                )
+                .hoverEvent(showText(text(xyz, GRAY)))
+                .clickEvent(runCommand("/tp " + xyz))
+                .insertion(xyz)
+            );
+        }
+        player.sendMessage(text("Assigned " + count + " IDs", YELLOW));
     }
 
     private void progress(Player player) {
