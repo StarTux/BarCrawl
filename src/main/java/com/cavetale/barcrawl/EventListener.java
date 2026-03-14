@@ -51,7 +51,7 @@ public final class EventListener implements Listener {
     }
 
     public boolean isBarCrawlWorld(World world) {
-        return "daftpunkytrash-007".equals(world.getName());
+        return "irishpub".equals(world.getName());
     }
 
     @EventHandler
