@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.World;
@@ -21,8 +20,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
 import static com.cavetale.core.font.Unicode.tiny;
 import static net.kyori.adventure.text.Component.newline;
 import static net.kyori.adventure.text.Component.space;
@@ -65,7 +62,7 @@ public final class EventListener implements Listener {
             event.bossbar(
                 PlayerHudPriority.HIGH,
                 textOfChildren(text(tiny("your item "), GRAY), nextNeed.getMytems(), text(nextNeed.getDisplayName(), GREEN)),
-                BossBar.Color.RED,
+                BossBar.Color.GREEN,
                 BossBar.Overlay.PROGRESS,
                 1f
             );
@@ -97,41 +94,25 @@ public final class EventListener implements Listener {
                 session.save();
                 plugin.getLogger().info(player.getName() + " rolled (" + session.getTag().getNeeds().size() + ")");
             }
-            final ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
-            book.editMeta(
-                BookMeta.class,
-                meta -> {
-                    meta.author(text("Cavetale"));
-                    meta.title(text("BarCrawl"));
-                    meta.pages(
-                        List.of(
-                            textOfChildren(
-                                text(id, GRAY),
-                                newline(),
-                                plugin.getEdition().getGreeting(),
-                                newline(),
-                                newline(),
-                                text("Go around and find out who needs your current item."),
-                                space(),
-                                text("They will be very happy and give you a new item in return."),
-                                newline(), newline(),
-                                text("Once everybody is happy, a cool reward awaits.")),
-                            textOfChildren(
-                                text("Total completions: ", GRAY),
-                                text(plugin.getSaveTag().getScore(player.getUniqueId())),
-                                newline(),
-                                newline(),
-                                textOfChildren(
-                                    text("Trades done: ", GRAY),
-                                    text(session.getTag().getNeedIndex())
-                                )
-                            )
-                        )
-                    );
-                }
+            DialogHelper.showNoticeDialog(
+                player,
+                text(id, WHITE, BOLD),
+                List.of(
+                    plugin.getEdition().getGreeting(),
+                    textOfChildren(
+                        text("Go around and find out who needs your current item."),
+                        text(" They will be very happy and give you a new item in return."),
+                        text(" Once everybody is "), Mytems.SMILE, text(" happy, a cool reward awaits.")
+                    ).color(plugin.getEdition().getTextColor()),
+                    textOfChildren(
+                        text("Trades done: ", GRAY),
+                        text(session.getTag().getNeedIndex(), plugin.getEdition().getTextColor()),
+                        newline(),
+                        text("Total completions: ", GRAY),
+                        text(plugin.getSaveTag().getScore(player.getUniqueId()), plugin.getEdition().getTextColor())
+                    )
+                )
             );
-            player.closeInventory();
-            player.openBook(book);
             player.playSound(player.getLocation(), Sound.ENTITY_SNIFFER_HAPPY, SoundCategory.MASTER, 0.5f, 2f);
             return;
         }
@@ -172,22 +153,22 @@ public final class EventListener implements Listener {
                 player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, SoundCategory.MASTER, 0.5f, 0.75f);
             }
         } else {
-            final ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
-            book.editMeta(BookMeta.class, meta -> {
-                    meta.author(text("Cavetale"));
-                    meta.title(text("BarCrawl"));
-                    if (session.getTag().getNeedIndex() > index) {
-                        meta.pages(List.of(textOfChildren(text(id + ": ", GRAY),
-                                                          text("Thank you so much! ", BLACK), Mytems.SMILE)));
-                        player.playSound(player.getLocation(), Sound.ENTITY_SNIFFER_HAPPY, SoundCategory.MASTER, 0.5f, 2f);
-                    } else {
-                        meta.pages(List.of(textOfChildren(text(id + ": ", GRAY),
-                                                          text(thisNeed.getRequest(), BLACK))));
-                        player.playSound(player.getLocation(), Sound.ENTITY_STRIDER_HAPPY, SoundCategory.MASTER, 0.5f, 2f);
-                    }
-                });
-            player.closeInventory();
-            player.openBook(book);
+            final Component message;
+            if (session.getTag().getNeedIndex() > index) {
+                message = textOfChildren(
+                    text("Thank you so much! ", plugin.getEdition().getTextColor()),
+                    Mytems.SMILE
+                );
+                player.playSound(player.getLocation(), Sound.ENTITY_SNIFFER_HAPPY, SoundCategory.MASTER, 0.5f, 2f);
+            } else {
+                message = text(thisNeed.getRequest(), plugin.getEdition().getTextColor());
+                player.playSound(player.getLocation(), Sound.ENTITY_STRIDER_HAPPY, SoundCategory.MASTER, 0.5f, 2f);
+            }
+            DialogHelper.showNoticeDialog(
+                player,
+                text(id, WHITE, BOLD),
+                List.of(message)
+            );
         }
     }
 }

@@ -5,18 +5,20 @@ import com.cavetale.mytems.Mytems;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.entity.Player;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.Component.textOfChildren;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
+import static net.kyori.adventure.text.format.TextColor.color;
 
 @Getter
 @RequiredArgsConstructor
 public enum BarCrawlEdition {
-    ST_PATRICKS(new StPatricksNeeds()) {
+    ST_PATRICKS(new StPatricksNeeds(), color(0x009a44)) {
         @Override public Component getGreeting() {
             return textOfChildren(
-                text("Happy Saint Patrick's Day!"),
+                text("Happy Saint Patrick's Day! ", getTextColor()),
                 Mytems.SMILE
             );
         }
@@ -29,10 +31,10 @@ public enum BarCrawlEdition {
             Mytems.KITTY_COIN.giveItemStack(player, 1);
         }
     },
-    CAVETOBER(new CavetoberNeeds()) {
+    CAVETOBER(new CavetoberNeeds(), GOLD) {
         @Override public Component getGreeting() {
             return textOfChildren(
-                text("Happy Halloween! ", GOLD),
+                text("Happy Halloween! ", getTextColor()),
                 VanillaItems.CARVED_PUMPKIN
             );
         }
@@ -56,6 +58,7 @@ public enum BarCrawlEdition {
     ;
 
     private final Needs needs;
+    private final TextColor textColor;
 
     abstract Component getGreeting();
 
