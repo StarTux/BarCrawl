@@ -68,13 +68,11 @@ public final class EventListener implements Listener {
             );
         }
         final int score = plugin.getSaveTag().getScore(player.getUniqueId());
-        if (score > 0) {
-            final List<Component> sidebar = new ArrayList<>();
-            sidebar.add(BarCrawlPlugin.TITLE);
-            sidebar.add(textOfChildren(text(tiny("completions "), GRAY), text(score, WHITE)));
-            sidebar.addAll(plugin.getHighscore());
-            event.sidebar(PlayerHudPriority.HIGH, sidebar);
-        }
+        final List<Component> sidebar = new ArrayList<>();
+        sidebar.add(BarCrawlPlugin.TITLE);
+        sidebar.add(textOfChildren(text(tiny("completions "), GRAY), text(score, WHITE)));
+        sidebar.addAll(plugin.getHighscore());
+        event.sidebar(PlayerHudPriority.HIGH, sidebar);
     }
 
     @EventHandler
